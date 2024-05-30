@@ -847,38 +847,61 @@ bool IsCollision(const Segment& segment, const Plane& plane)
 
 //三角形と線の衝突判定
 bool IsCollision(const Triangle& triangle, const Segment& segment) {
-	Vector3 edge1 = Subtract(triangle.vertices[1], triangle.vertices[0]);
-	Vector3 edge2 = Subtract(triangle.vertices[2], triangle.vertices[0]);
-	Vector3 h = Cross(segment.diff, edge2);
-	float a = Dot(edge1, h);
-
-	if (a > -0.00001f && a < 0.00001f)
-		return false;   
-
-	float f = 1.0f / a;
-	Vector3 s = Subtract(segment.origin, triangle.vertices[0]);
-	float u = f * Dot(s, h);
-
-	if (u < 0.0f || u > 1.0f)
-		return false;
-
-	Vector3 q = Cross(s, edge1);
-	float v = f * Dot(segment.diff, q);
-
-	if (v < 0.0f || u + v > 1.0f)
-		return false;
+	Vector3 diff = Subtract(segment.diff, segment.origin);
 
 	
-	float t = f * Dot(edge2, q);
+	//三点の位置から平面を求める
+	Plane plane = PlaneFromPoints(triangle.vertices[0], triangle.vertices[1], triangle.vertices[2]);
 
-	if (t > 0.00001f) 
-	{
-		return true;
-	}
 
-	else {
+	float dot = Dot(plane.nomal, diff);
+
+	// 垂直=平行であるので、衝突しているはずがない
+	if (dot == 0.0f) {
 		return false;
 	}
+
+	float t = (plane.distance - Dot(segment.origin, plane.nomal)) / dot;
+
+
+	Vector3 p = { segment.origin.x + t * diff.x, segment.origin.y + t * diff.y, segment.origin.z + t * diff.z };
+
+	Vector3 v01 = Subtract(triangle.vertices[0], triangle.vertices[1]);
+	Vector3 v12 = Subtract(triangle.vertices[1], triangle.vertices[2]);
+	Vector3 v20 = Subtract(triangle.vertices[2], triangle.vertices[0]);
+
+	Vector3 v0p = Subtract(triangle.vertices[0], p);
+	Vector3 v1p = Subtract(triangle.vertices[1], p);
+	Vector3 v2p = Subtract(triangle.vertices[2], p);
+
+	Vector3 cross01 = Cross(v01, v1p);
+	Vector3 cross12 = Cross(v12, v2p);
+	Vector3 cross20 = Cross(v20, v0p);
+
+
+	float dot01 = Dot(cross01, plane.nomal);
+	float dot12 = Dot(cross12, plane.nomal);
+	float dot20 = Dot(cross20, plane.nomal);
+
+	ImGui::Begin("t");
+	ImGui::DragFloat("t", &t);
+	ImGui::DragFloat("dot01", &dot01);
+	ImGui::DragFloat("dot12", &dot12);
+	ImGui::DragFloat("dot20", &dot20);
+	ImGui::End();
+
+	
+
+	if (Dot(cross01, plane.nomal) >= 0.0f &&
+		Dot(cross12, plane.nomal) >= 0.0f &&
+		Dot(cross20, plane.nomal) >= 0.0f) {
+		// 線分の始点と終点が三角形の面のどちら側にあるかを判定
+		if (t >= 0.0f && t <= 1.0f) {
+			return true;
+		}
+	}
+
+	return false;
 }
 //
 Vector3 Perpendicular(const Vector3& vector) {
@@ -887,7 +910,22 @@ Vector3 Perpendicular(const Vector3& vector) {
 	}
 	return { 0.0f,-vector.z,vector.y };
 }
+//
+Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3) {
+	Plane result;
 
+	// ベクトルを計算
+	Vector3 v1 = Subtract(p2, p1);
+	Vector3 v2 = Subtract(p3, p1);
+
+	// 法線を計算
+	result.nomal = Cross(v1, v2);
+
+	// 距離を計算
+	result.distance = Dot(result.nomal, p1);
+
+	return result;
+};
 //マウス
 void Mouse(Vector3& cameraPosition)
 {

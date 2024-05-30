@@ -23,9 +23,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
 
 	Triangle triangle{};
-	triangle.vertices[0] = { -10,0,0 };
+	triangle.vertices[0] = { 0,20,0 };
 	triangle.vertices[1] = { 10,0,0 };
-	triangle.vertices[2] = { 0,20,0 };
+	triangle.vertices[2] = { -10,0,0 };
 
 	Segment segment{};
 	segment.origin = { 0,5,-5 };

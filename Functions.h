@@ -127,5 +127,7 @@ bool IsCollision(const Segment& segment, const Plane& plane);
 bool IsCollision(const Triangle& triangle, const Segment& segment);
 //
 Vector3 Perpendicular(const Vector3& vector);
+
+Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3);
 //マウス
 void Mouse(Vector3& cameraPosition);
