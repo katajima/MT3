@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MT3_02_04", "MT3_02_04.vcxproj", "{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{410399B9-721A-46B1-9749-81A991511511}"
+	ProjectSection(SolutionItems) = preProject
+		Functions.cpp = Functions.cpp
+		Functions.h = Functions.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}.Debug|x64.ActiveCfg = Debug|x64
+		{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}.Debug|x64.Build.0 = Debug|x64
+		{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}.Release|x64.ActiveCfg = Release|x64
+		{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E6A30A57-0592-4203-9808-66FC3376957F}
+	EndGlobalSection
+EndGlobal
