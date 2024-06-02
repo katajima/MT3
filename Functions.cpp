@@ -61,6 +61,12 @@ float Clanp(float t) {
 
 	return t;
 }
+// クランプ関数
+float Clamp(float value, float min, float max) {
+	if (value < min) return min;
+	if (value > max) return max;
+	return value;
+}
 
 Vector3 Nomalize(const Vector3& v) {
 	Vector3 result{};
@@ -945,6 +951,7 @@ bool IsCollision(const Triangle& triangle, const Segment& segment) {
 
 	return false;
 }
+//
 bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 {
 	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
@@ -956,6 +963,8 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 
 	return false;
 }
+//
+
 //
 Vector3 Perpendicular(const Vector3& vector) {
 	if (vector.x != 0.0f || vector.y != 0.0f) {

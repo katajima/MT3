@@ -70,6 +70,8 @@ float Length(const Vector3& v);
 //
 float Clanp(float t);
 //
+float Clamp(float value, float min, float max);
+//
 Vector3 Nomalize(const Vector3& v);
 //行列の積
 Matrix4x4 Multiply(const Matrix4x4& v1, const Matrix4x4& v2);
