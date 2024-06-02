@@ -25,9 +25,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AABB aabb1;
 	aabb1.max = { 5.0f,5.0f,5.0f };
 	aabb1.min = { 0.0f,0.0f,0.0f };
-	AABB aabb2;
-	aabb2.max = { 15.0f,5.0f,15.0f };
-	aabb2.min = { 0.0f,0.0f,5.0f };
+	Sphere sphere;
+	sphere.center = { 5,5,5 };
+	sphere.radius = { 5 };
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -101,21 +102,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
-		if (IsCollision(aabb1,aabb2)) {
+		if (IsCollision(aabb1,sphere)) {
 			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
 			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, WHITE);
 		}
-		DrawBox(aabb2, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
+		ImGui::DragFloat3("sphere.center", &sphere.center.x, 0.1f);
+		ImGui::DragFloat("sphere.radius", &sphere.radius, 0.1f);
 		ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.1f);
 		ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.1f);
-		ImGui::InputFloat3("aabb2.max", &aabb2.max.x);
-		ImGui::InputFloat3("aabb2.min", &aabb2.min.x);
 		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
 		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
 		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);

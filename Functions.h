@@ -68,6 +68,8 @@ float Dot(const Vector3& v1, const Vector3& v2);
 //
 float Length(const Vector3& v);
 //
+float Distance(const Vector3& point1, const Vector3& point2);
+//
 float Clanp(float t);
 //
 float Clamp(float value, float min, float max);
@@ -125,8 +127,10 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 Vector3 Project(const Vector3& v1, const Vector3& v2);
-//
+//最近接点
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+//球と四角形に対する最近接点
+Vector3 ClosestPointAABBSphere(const Sphere& sphere, const AABB& aabb);
 //衝突判定(球と球)
 bool IsCollision(const Sphere& s1, const Sphere& s2);
 //衝突判定(球と平面)
@@ -137,7 +141,9 @@ bool IsCollision(const Segment& segment, const Plane& plane);
 bool IsCollision(const Triangle& triangle, const Segment& segment);
 //四角形と四角形の衝突判定
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
-
+//
+bool IsCollision(const AABB& aabb, const Sphere& sphere);
+//
 Vector3 Perpendicular(const Vector3& vector);
 
 Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3);

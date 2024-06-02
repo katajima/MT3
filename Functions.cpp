@@ -42,6 +42,14 @@ float Length(const Vector3& v) {
 
 	return result;
 };
+// 2つの点間の距離を計算する関数
+float Distance(const Vector3& point1, const Vector3& point2) {
+	float dx = point1.x - point2.x;
+	float dy = point1.y - point2.y;
+	float dz = point1.z - point2.z;
+	return std::sqrt(dx * dx + dy * dy + dz * dz);
+}
+
 float Length(const float& v) {
 	float result;
 
@@ -805,6 +813,16 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 
 	return result;
 }
+//
+Vector3 ClosestPointAABBSphere(const Sphere& sphere, const AABB& aabb)
+{
+	Vector3 closestPoint;
+	closestPoint.x = Clamp(sphere.center.x, aabb.min.x, aabb.max.x);
+	closestPoint.y = Clamp(sphere.center.y, aabb.min.y, aabb.max.y);
+	closestPoint.z = Clamp(sphere.center.z, aabb.min.z, aabb.max.z);
+
+	return closestPoint;
+}
 //衝突判定(球と球)
 bool IsCollision(const Sphere& s1, const Sphere& s2)
 {
@@ -962,6 +980,20 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 	}
 
 	return false;
+}
+//
+bool IsCollision(const AABB& aabb, const Sphere& sphere)
+{
+	Vector3 closestPoint = ClosestPointAABBSphere(sphere, aabb);
+
+	float dist = Distance(sphere.center, closestPoint);
+
+	if (dist <= sphere.radius) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 //
 
