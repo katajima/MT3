@@ -709,7 +709,49 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 		int(scrTri[1].x), int(scrTri[1].y),
 		int(scrTri[2].x), int(scrTri[2].y),
 		color, kFillModeWireFrame);
-};
+}
+void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	aabb.max;
+	aabb.min;
+
+	
+	Vector3 aabb1[8];
+	Vector3 aabbNdc[8];
+	Vector3 aabbScr1[8];
+
+	aabb1[0] = { aabb.min.x,aabb.min.y,aabb.min.z };
+	aabb1[1] = { aabb.min.x,aabb.min.y,aabb.max.z };
+	aabb1[2] = { aabb.min.x,aabb.max.y,aabb.min.z };
+	aabb1[3] = { aabb.min.x,aabb.max.y,aabb.max.z };
+	aabb1[4] = { aabb.max.x,aabb.min.y,aabb.min.z };
+	aabb1[5] = { aabb.max.x,aabb.min.y,aabb.max.z };
+	aabb1[6] = { aabb.max.x,aabb.max.y,aabb.min.z };
+	aabb1[7] = { aabb.max.x,aabb.max.y,aabb.max.z };
+
+	for (int i = 0; i < 8; i++) {
+		aabbNdc[i] = Transform(aabb1[i], viewProjectionMatrix);
+		aabbScr1[i] = Transform(aabbNdc[i],viewportMatrix);
+	}
+
+
+	Novice::DrawLine(int(aabbScr1[0].x), int(aabbScr1[0].y), int(aabbScr1[1].x), int(aabbScr1[1].y), color);
+	Novice::DrawLine(int(aabbScr1[1].x), int(aabbScr1[1].y), int(aabbScr1[3].x), int(aabbScr1[3].y), color);
+	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[3].x), int(aabbScr1[3].y), color);
+	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[0].x), int(aabbScr1[0].y), color);
+	
+	Novice::DrawLine(int(aabbScr1[4].x), int(aabbScr1[4].y), int(aabbScr1[5].x), int(aabbScr1[5].y), color);
+	Novice::DrawLine(int(aabbScr1[5].x), int(aabbScr1[5].y), int(aabbScr1[7].x), int(aabbScr1[7].y), color);
+	Novice::DrawLine(int(aabbScr1[7].x), int(aabbScr1[7].y), int(aabbScr1[6].x), int(aabbScr1[6].y), color);
+	Novice::DrawLine(int(aabbScr1[6].x), int(aabbScr1[6].y), int(aabbScr1[4].x), int(aabbScr1[4].y), color);
+	
+	Novice::DrawLine(int(aabbScr1[0].x), int(aabbScr1[0].y), int(aabbScr1[4].x), int(aabbScr1[4].y), color);
+	Novice::DrawLine(int(aabbScr1[1].x), int(aabbScr1[1].y), int(aabbScr1[5].x), int(aabbScr1[5].y), color);
+	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[6].x), int(aabbScr1[6].y), color);
+	Novice::DrawLine(int(aabbScr1[3].x), int(aabbScr1[3].y), int(aabbScr1[7].x), int(aabbScr1[7].y), color);
+
+}
+;
 
 
 Vector3 Project(const Vector3& v1, const Vector3& v2)
@@ -849,7 +891,7 @@ bool IsCollision(const Segment& segment, const Plane& plane)
 bool IsCollision(const Triangle& triangle, const Segment& segment) {
 	Vector3 diff = Subtract(segment.diff, segment.origin);
 
-	
+
 	//三点の位置から平面を求める
 	Plane plane = PlaneFromPoints(triangle.vertices[0], triangle.vertices[1], triangle.vertices[2]);
 
@@ -890,7 +932,7 @@ bool IsCollision(const Triangle& triangle, const Segment& segment) {
 	ImGui::DragFloat("dot20", &dot20);
 	ImGui::End();
 
-	
+
 
 	if (Dot(cross01, plane.nomal) >= 0.0f &&
 		Dot(cross12, plane.nomal) >= 0.0f &&
@@ -899,6 +941,17 @@ bool IsCollision(const Triangle& triangle, const Segment& segment) {
 		if (t >= 0.0f && t <= 1.0f) {
 			return true;
 		}
+	}
+
+	return false;
+}
+bool IsCollision(const AABB& aabb1, const AABB& aabb2)
+{
+	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
+		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) &&
+		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) {
+
+		return true;
 	}
 
 	return false;

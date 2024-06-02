@@ -6,10 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MT3_02_04", "MT3_02_04.vcxproj", "{C51BC4C2-EBC9-4BE2-8F9C-B115DF2BE422}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{410399B9-721A-46B1-9749-81A991511511}"
-	ProjectSection(SolutionItems) = preProject
-		Functions.cpp = Functions.cpp
-		Functions.h = Functions.h
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

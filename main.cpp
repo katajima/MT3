@@ -22,15 +22,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraPosition{ 0.0f,20.0f,-61.49f };
 	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
 
-	Triangle triangle{};
-	triangle.vertices[0] = { 0,20,0 };
-	triangle.vertices[1] = { 10,0,0 };
-	triangle.vertices[2] = { -10,0,0 };
-
-	Segment segment{};
-	segment.origin = { 0,5,-5 };
-	segment.diff = { 0,5,5 };
-
+	AABB aabb1;
+	aabb1.max = { 5.0f,5.0f,5.0f };
+	aabb1.min = { 0.0f,0.0f,0.0f };
+	AABB aabb2;
+	aabb2.max = { 15.0f,5.0f,15.0f };
+	aabb2.min = { 0.0f,0.0f,5.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -104,26 +101,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
-
-		DrawLine(segment, worldViewProjectionMatrix, viewportMatrix, WHITE);
-
-		if (IsCollision(triangle, segment)) {
-
-			DrawTriangle(triangle, worldViewProjectionMatrix, viewportMatrix, RED);
+		if (IsCollision(aabb1,aabb2)) {
+			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
-			DrawTriangle(triangle, worldViewProjectionMatrix, viewportMatrix, WHITE);
+			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, WHITE);
 		}
-
+		DrawBox(aabb2, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
-		ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.1f);
-		ImGui::DragFloat3("segment.diff", &segment.diff.x, 0.1f);
-		ImGui::DragFloat3("Triangle[0]", &triangle.vertices[0].x, 0.1f);
-		ImGui::DragFloat3("Triangle[1]", &triangle.vertices[1].x, 0.1f);
-		ImGui::DragFloat3("Triangle[2]", &triangle.vertices[2].x, 0.1f);
+		ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.1f);
+		ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.1f);
+		ImGui::InputFloat3("aabb2.max", &aabb2.max.x);
+		ImGui::InputFloat3("aabb2.min", &aabb2.min.x);
+		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
+		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
+		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
+		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
+		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
+		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
 		ImGui::End();
 
 

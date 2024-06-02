@@ -53,6 +53,12 @@ struct Triangle
 {
 	Vector3 vertices[3]; // !頂点
 };
+struct AABB {
+	Vector3 min; //!< 最小点
+	Vector3 max; //!< 最大点
+};
+
+
 //
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 //
@@ -113,6 +119,8 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 void DrawLine(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 //
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+//
+void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 //
@@ -125,7 +133,9 @@ bool IsCollision(const Sphere& sphere, const Plane& plane);
 bool IsCollision(const Segment& segment, const Plane& plane);
 //三角形と線の衝突判定
 bool IsCollision(const Triangle& triangle, const Segment& segment);
-//
+//四角形と四角形の衝突判定
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+
 Vector3 Perpendicular(const Vector3& vector);
 
 Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3);
