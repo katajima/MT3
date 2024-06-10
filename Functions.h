@@ -141,8 +141,12 @@ bool IsCollision(const Segment& segment, const Plane& plane);
 bool IsCollision(const Triangle& triangle, const Segment& segment);
 //四角形と四角形の衝突判定
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
-//
+//四角形と球の衝突判定
 bool IsCollision(const AABB& aabb, const Sphere& sphere);
+//四角形と線の衝突判定
+bool IsCollision(const AABB& aabb, const Segment& segment);
+//
+bool IsPointInsideAABB(const Vector3& point, const AABB& aabb);
 //
 Vector3 Perpendicular(const Vector3& vector);
 

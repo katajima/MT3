@@ -729,7 +729,7 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 	aabb.max;
 	aabb.min;
 
-	
+
 	Vector3 aabb1[8];
 	Vector3 aabbNdc[8];
 	Vector3 aabbScr1[8];
@@ -745,7 +745,7 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 
 	for (int i = 0; i < 8; i++) {
 		aabbNdc[i] = Transform(aabb1[i], viewProjectionMatrix);
-		aabbScr1[i] = Transform(aabbNdc[i],viewportMatrix);
+		aabbScr1[i] = Transform(aabbNdc[i], viewportMatrix);
 	}
 
 
@@ -753,12 +753,12 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 	Novice::DrawLine(int(aabbScr1[1].x), int(aabbScr1[1].y), int(aabbScr1[3].x), int(aabbScr1[3].y), color);
 	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[3].x), int(aabbScr1[3].y), color);
 	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[0].x), int(aabbScr1[0].y), color);
-	
+
 	Novice::DrawLine(int(aabbScr1[4].x), int(aabbScr1[4].y), int(aabbScr1[5].x), int(aabbScr1[5].y), color);
 	Novice::DrawLine(int(aabbScr1[5].x), int(aabbScr1[5].y), int(aabbScr1[7].x), int(aabbScr1[7].y), color);
 	Novice::DrawLine(int(aabbScr1[7].x), int(aabbScr1[7].y), int(aabbScr1[6].x), int(aabbScr1[6].y), color);
 	Novice::DrawLine(int(aabbScr1[6].x), int(aabbScr1[6].y), int(aabbScr1[4].x), int(aabbScr1[4].y), color);
-	
+
 	Novice::DrawLine(int(aabbScr1[0].x), int(aabbScr1[0].y), int(aabbScr1[4].x), int(aabbScr1[4].y), color);
 	Novice::DrawLine(int(aabbScr1[1].x), int(aabbScr1[1].y), int(aabbScr1[5].x), int(aabbScr1[5].y), color);
 	Novice::DrawLine(int(aabbScr1[2].x), int(aabbScr1[2].y), int(aabbScr1[6].x), int(aabbScr1[6].y), color);
@@ -995,7 +995,73 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere)
 		return false;
 	}
 }
-//
+//四角形と線の衝突判定
+bool IsCollision(const AABB& aabb, const Segment& segment)
+{
+	//点がAABB内にあるなら
+	if (IsPointInsideAABB(segment.origin, aabb) || IsPointInsideAABB(segment.diff, aabb)) {
+
+		return true;
+	}
+
+	Plane planeX1, planeY1, planeZ1;
+	planeX1.nomal = { 1,0,0 };
+	planeY1.nomal = { 0,1,0 };
+	planeZ1.nomal = { 0,0,1 };
+
+	Vector3 diff = Subtract(segment.diff, segment.origin);
+
+	float dotX = Dot(planeX1.nomal, diff);
+	float dotY = Dot(planeY1.nomal, diff);
+	float dotZ = Dot(planeZ1.nomal, diff);
+
+
+	// 特異点チェック: 線分が軸に平行である場合
+	if (std::abs(dotX) < 1e-6) {
+		if (segment.origin.x < aabb.min.x || segment.origin.x > aabb.max.x) return false;
+	}
+	if (std::abs(dotY) < 1e-6) {
+		if (segment.origin.y < aabb.min.y || segment.origin.y > aabb.max.y) return false;
+	}
+	if (std::abs(dotZ) < 1e-6) {
+		if (segment.origin.z < aabb.min.z || segment.origin.z > aabb.max.z) return false;
+	}
+
+
+	Vector3 tMin, tMax;
+
+	tMin.x = (aabb.min.x - Dot(segment.origin, planeX1.nomal)) / dotX;
+	tMin.y = (aabb.min.y - Dot(segment.origin, planeY1.nomal)) / dotY;
+	tMin.z = (aabb.min.z - Dot(segment.origin, planeZ1.nomal)) / dotZ;
+
+	tMax.x = (aabb.max.x - Dot(segment.origin, planeX1.nomal)) / dotX;
+	tMax.y = (aabb.max.y - Dot(segment.origin, planeY1.nomal)) / dotY;
+	tMax.z = (aabb.max.z - Dot(segment.origin, planeZ1.nomal)) / dotZ;
+
+
+	Vector3 tNear, tFar;
+
+	tNear.x = min(tMin.x, tMax.x);
+	tNear.y = min(tMin.y, tMax.y);
+	tNear.z = min(tMin.z, tMax.z);
+	tFar.x = max(tMin.x, tMax.x);
+	tFar.y = max(tMin.y, tMax.y);
+	tFar.z = max(tMin.z, tMax.z);
+
+
+	// AABBとの衝突点(貫通点)のtが小さい方
+	float tmin = max(max(tNear.x, tNear.y), tNear.z);
+
+	// AABBとの衝突点(貫通点)のtが大きい方
+	float tmax = min(min(tFar.x, tFar.y), tFar.z);
+
+	if (tmin <= tmax) {
+		return true;
+	}
+
+
+	return false;
+}
 
 //
 Vector3 Perpendicular(const Vector3& vector) {
@@ -1046,4 +1112,10 @@ void Mouse(Vector3& cameraPosition)
 	else if (Novice::IsTriggerMouse(1)) {
 	}
 
+}
+
+bool IsPointInsideAABB(const Vector3& point, const AABB& aabb) {
+	return (point.x >= aabb.min.x && point.x <= aabb.max.x) &&
+		(point.y >= aabb.min.y && point.y <= aabb.max.y) &&
+		(point.z >= aabb.min.z && point.z <= aabb.max.z);
 }
