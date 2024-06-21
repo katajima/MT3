@@ -22,12 +22,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraPosition{ 0.0f,20.0f,-61.49f };
 	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
 
-	AABB aabb1;
-	aabb1.max = { 5.0f,5.0f,5.0f };
-	aabb1.min = { 0.0f,0.0f,0.0f };
-	Segment segment;
-	segment.origin = { 0.0f,0.0f,0.0f };
-	segment.diff = { 0.0f,0.0f,5.0f };
+	Vector3 controlPoint[3];
+	controlPoint[0] = { 5,5,5 };
+	controlPoint[1] = { 5,10,5 };
+	controlPoint[2] = { 10,5,0 };
+	Sphere sphere[3];
+	for (int i = 0; i < 3; i++) {
+		sphere[i].center = controlPoint[i];
+		sphere[i].radius = 0.1f;
+	}
 
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -103,27 +106,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
-		if (IsCollision(aabb1,segment)) {
-			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, RED);
+		
+		DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2], worldViewProjectionMatrix, viewportMatrix,BLUE);
+
+		for (int i = 0; i < 3; i++) {
+			sphere[i].center = controlPoint[i];
+			DrawSphere(sphere[i], worldViewProjectionMatrix, viewportMatrix,BLACK);
 		}
-		else {
-			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, WHITE);
-		}
-		DrawLine(segment, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
-		ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.1f);
-		ImGui::DragFloat3("segment.diff", &segment.diff.x, 0.1f); 
-		ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.1f);
-		ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.1f);
-		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
-		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
-		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
-		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
-		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
-		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
+		ImGui::DragFloat3("controlPoint0", &controlPoint[0].x, 0.1f);
+		ImGui::DragFloat3("controlPoint1", &controlPoint[1].x, 0.1f);
+		ImGui::DragFloat3("controlPoint2", &controlPoint[2].x, 0.1f);
 		ImGui::End();
 
 

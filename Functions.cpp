@@ -80,7 +80,7 @@ Vector3 Lerp(const Vector3& a, const Vector3& b, float t) {
 
 	temp.x = t * a.x + (1.0f - t) * b.x;
 	temp.y = t * a.y + (1.0f - t) * b.y;
-	temp.y = t * a.z + (1.0f - t) * b.z;
+	temp.z = t * a.z + (1.0f - t) * b.z;
 
 	return  temp;
 
@@ -791,8 +791,7 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 
 void DrawBezier(const Vector3 controlPoint0, const Vector3 controlPoint1, const Vector3 controlPoint2,
 	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
-	const int SPLIT = 16;
-	//Vector3 controlPoint[3];
+	const int SPLIT = 8;
 	Vector3 bezier0[SPLIT];
 	Vector3 bezier1[SPLIT];
 	Vector3 scrbezier0[SPLIT];
@@ -811,6 +810,17 @@ void DrawBezier(const Vector3 controlPoint0, const Vector3 controlPoint1, const 
 		Novice::DrawLine(int(scrbezier0[index].x), int(scrbezier0[index].y), int(scrbezier1[index].x), int(scrbezier1[index].y), color);
 
 	}
+	ImGui::Begin("Bezier");
+	ImGui::InputFloat3("0", &bezier0[0].x);
+	ImGui::InputFloat3("1", &bezier0[0].x);
+	ImGui::InputFloat3("2", &bezier0[0].x);
+	ImGui::InputFloat3("3", &bezier0[0].x);
+	ImGui::InputFloat3("4", &bezier0[0].x);
+	ImGui::InputFloat3("5", &bezier0[0].x);
+	ImGui::InputFloat3("6", &bezier0[0].x);
+	ImGui::InputFloat3("7", &bezier0[0].x);
+	ImGui::End();
+
 };
 
 
