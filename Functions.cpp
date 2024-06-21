@@ -75,6 +75,29 @@ float Clamp(float value, float min, float max) {
 	if (value > max) return max;
 	return value;
 }
+Vector3 Lerp(const Vector3& a, const Vector3& b, float t) {
+	Vector3 temp{};
+
+	temp.x = t * a.x + (1.0f - t) * b.x;
+	temp.y = t * a.y + (1.0f - t) * b.y;
+	temp.y = t * a.z + (1.0f - t) * b.z;
+
+	return  temp;
+
+}
+
+Vector3 Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t) {
+
+	Vector3 p0p1 = Lerp(p0, p1, t);
+
+	Vector3 p1p2 = Lerp(p1, p2, t);
+
+	Vector3 p = Lerp(p0p1, p1p2, t);
+
+	return Lerp(p0p1, p1p2, t);
+
+}
+
 
 Vector3 Nomalize(const Vector3& v) {
 	Vector3 result{};
@@ -765,7 +788,30 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 	Novice::DrawLine(int(aabbScr1[3].x), int(aabbScr1[3].y), int(aabbScr1[7].x), int(aabbScr1[7].y), color);
 
 }
-;
+
+void DrawBezier(const Vector3 controlPoint0, const Vector3 controlPoint1, const Vector3 controlPoint2,
+	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	const int SPLIT = 16;
+	//Vector3 controlPoint[3];
+	Vector3 bezier0[SPLIT];
+	Vector3 bezier1[SPLIT];
+	Vector3 scrbezier0[SPLIT];
+	Vector3 scrbezier1[SPLIT];
+	//ライン
+	for (int index = 0; index < SPLIT; index++) {
+		float t0 = index / float(SPLIT);
+		float t1 = (index + 1) / float(SPLIT);
+
+		bezier0[index] = Bezier(controlPoint0, controlPoint1, controlPoint2, t0);
+		bezier1[index] = Bezier(controlPoint0, controlPoint1, controlPoint2, t1);
+	
+		scrbezier0[index] = Transform(Transform(bezier0[index], viewProjectionMatrix), viewportMatrix);
+		scrbezier1[index] = Transform(Transform(bezier1[index], viewProjectionMatrix), viewportMatrix);
+	
+		Novice::DrawLine(int(scrbezier0[index].x), int(scrbezier0[index].y), int(scrbezier1[index].x), int(scrbezier1[index].y), color);
+
+	}
+};
 
 
 Vector3 Project(const Vector3& v1, const Vector3& v2)

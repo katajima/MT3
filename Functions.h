@@ -74,6 +74,10 @@ float Clanp(float t);
 //
 float Clamp(float value, float min, float max);
 //
+Vector3 Lerp(const Vector3& a, const Vector3& b, float t);
+//
+Vector3 Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t);
+
 Vector3 Nomalize(const Vector3& v);
 //行列の積
 Matrix4x4 Multiply(const Matrix4x4& v1, const Matrix4x4& v2);
@@ -125,7 +129,10 @@ void DrawLine(const Segment& segment, const Matrix4x4& viewProjectionMatrix, con
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 //
 void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
-
+//
+void DrawBezier(const Vector3 controlPoint0, const Vector3 controlPoint1, const Vector3 controlPoint2,
+	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+//
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 //最近接点
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
