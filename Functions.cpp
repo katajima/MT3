@@ -753,8 +753,8 @@ void DrawLine(const Segment& segment, const Matrix4x4& viewProjectionMatrix, con
 
 
 	Novice::DrawLine(int(originScr.x), int(originScr.y), int(diffScr.x), int(diffScr.y), color);
-	DrawSphere({ origin ,0.1f }, viewProjectionMatrix, viewportMatrix, RED);
-	DrawSphere({ diff ,0.1f }, viewProjectionMatrix, viewportMatrix, BLUE);
+	//DrawSphere({ origin ,0.1f }, viewProjectionMatrix, viewportMatrix, RED);
+	//DrawSphere({ diff ,0.1f }, viewProjectionMatrix, viewportMatrix, BLUE);
 }
 //三角形
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)

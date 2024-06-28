@@ -25,19 +25,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vector3 a{ 0.2f,1.0f,0.0f };
-	Vector3 b{ 2.4f,3.1f,1.2f };
-	Vector3 c = a + b;
-	Vector3 d = a - b;
-	Vector3 e = a * 2.4f;
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
-	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
-	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
-	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
-	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix 
-		* rotateZMatrix;
+	//移動
+	Vector3 translate{};
+	//回転
+	Vector3 rotate{};
+	//カメラポジション
+	Vector3 cameraPosition{ 0.0f,5.0f,-21.49f };
+	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
 
+	Spring spring{};
+	spring.anchor = { 0.0f,0.0f,0.0f };
+	spring.naturalLength = 1.0f;
+	spring.stiffness = 100.0f;
+	spring.dampingCoefficient = 2.0f;
 
+	Ball ball{};
+	ball.position = { 1.2f,0.0f,0.0f };
+	ball.mass = 2.0f;
+	ball.radius = 0.05f;
+	ball.color = BLUE;
+
+	Sphere sphere{};
+	float deltaTime = 1.0f / 60.0f;
+	bool flag = 0;
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -52,6 +62,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 
+		Matrix4x4 worldMatrix = MakeAffineMatrixMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
+		Matrix4x4 cameraMatrix = MakeAffineMatrixMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
+		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
+		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(1280) / float(720), 0.1f, 100.0f);
+		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+
+		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
+
+		if (flag) {
+			Vector3 diff = ball.position - spring.anchor;
+			float length = Length(diff);
+			if (length != 0.0f) {
+				Vector3 direction = Nomalize(diff);
+				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
+				Vector3 displacement = length * (ball.position - restPosition);
+				Vector3 restoringForce = -spring.stiffness * displacement;
+				Vector3 dampingForce = -spring.dampingCoefficient * ball.veloctiy;
+				Vector3 force = restoringForce + dampingForce;
+				ball.acceleration = force / ball.mass;
+			}
+			ball.veloctiy.x += ball.acceleration.x * deltaTime;
+			ball.veloctiy.y += ball.acceleration.y * deltaTime;
+			ball.veloctiy.z += ball.acceleration.z * deltaTime;
+			ball.position.x += ball.veloctiy.x * deltaTime;
+			ball.position.y += ball.veloctiy.y * deltaTime;
+			ball.position.z += ball.veloctiy.z * deltaTime;
+		}
+
+
+
+
+		sphere.center = ball.position;
+
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -61,23 +105,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 
-		
+
+		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 
-		
+		DrawLine({ ball.position,spring.anchor }, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere({ ball.position,ball.radius}, worldViewProjectionMatrix, viewportMatrix, ball.color);
+
+
 
 		ImGui::Begin("Win");
-		ImGui::Text("c:%f,%f,%f", c.x, c.y, c.z);
-		ImGui::Text("d:%f,%f,%f", d.x, d.y, d.z);
-		ImGui::Text("e:%f,%f,%f", e.x, e.y, e.z);
-		ImGui::Text(
-			"matrix:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
-			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
-			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3],
-			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3],
-			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]
-			);
+		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
+		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
+		ImGui::Checkbox("flag", &flag);
 		ImGui::End();
+
 
 
 		///

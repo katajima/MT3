@@ -2,6 +2,7 @@
 #include <Novice.h>
 #include<cmath>
 #include<assert.h>
+#include<struct.h>
 
 static const int kColumnWidth = 60;
 
@@ -15,6 +16,8 @@ struct Matrix4x4
 
 struct Vector3 {
 	float x, y, z;
+
+
 };
 
 // 円
@@ -53,10 +56,29 @@ struct Triangle
 {
 	Vector3 vertices[3]; // !頂点
 };
+//AABB
 struct AABB {
 	Vector3 min; //!< 最小点
 	Vector3 max; //!< 最大点
 };
+//ばね
+struct Spring
+{
+	Vector3 anchor;      // アンカーの固定された端の位置
+	float naturalLength; // 自然長
+	float stiffness;     // 剛性。バネ定数k
+	float dampingCoefficient; // 減衰係数
+};
+struct Ball {
+	Vector3 position;		//位置
+	Vector3 veloctiy;		//速度
+	Vector3 acceleration;	//加速度
+	float mass;				//質量
+	float radius;			//半径
+	unsigned int color;		//色
+};
+
+
 
 
 //
@@ -165,56 +187,51 @@ void Mouse(Vector3& cameraPosition);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-//class Vector3 {
-//public:
-//    float x, y, z;
+//// コンストラクタ
+//Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
 //
-//    // コンストラクタ
-//    Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
+//// スカラー乗算
+//Vector3& operator*=(float s) {
+//    x *= s;
+//    y *= s;
+//    z *= s;
+//    return *this;
+//}
+
+//// ベクトル引き算
+//Vector3& operator-=(const Vector3& v) {
+//    x -= v.x;
+//    y -= v.y;
+//    z -= v.z;
+//    return *this;
+//}
 //
-//    // スカラー乗算
-//    Vector3& operator*=(float s) {
-//        x *= s;
-//        y *= s;
-//        z *= s;
-//        return *this;
-//    }
+//// ベクトル加算
+//Vector3& operator+=(const Vector3& v) {
+//    x += v.x;
+//    y += v.y;
+//    z += v.z;
+//    return *this;
+//}
 //
-//    // ベクトル引き算
-//    Vector3& operator-=(const Vector3& v) {
-//        x -= v.x;
-//        y -= v.y;
-//        z -= v.z;
-//        return *this;
-//    }
-//
-//    // ベクトル加算
-//    Vector3& operator+=(const Vector3& v) {
-//        x += v.x;
-//        y += v.y;
-//        z += v.z;
-//        return *this;
-//    }
-//
-//    // スカラー除算
-//    Vector3& operator/=(float s) {
-//        x /= s;
-//        y /= s;
-//        z /= s;
-//        return *this;
-//    }
-//};
+//// スカラー除算
+//Vector3& operator/=(float s) {
+//    x /= s;
+//    y /= s;
+//    z /= s;
+//    return *this;
+//}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
