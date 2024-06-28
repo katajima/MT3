@@ -13,7 +13,22 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 
 
 	return result;
-};
+}
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2)
+{
+	Matrix4x4 result{};
+
+
+	for (int x = 0; x < 4; x++) {
+		for (int y = 0; y < 4; y++) {
+			result.m[y][x] = m1.m[y][x] + m2.m[y][x];
+		}
+	}
+
+
+	return result;
+}
+;
 
 Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
@@ -24,7 +39,22 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 
 
 	return result;
-};
+}
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2)
+{
+	Matrix4x4 result{};
+
+
+	for (int x = 0; x < 4; x++) {
+		for (int y = 0; y < 4; y++) {
+			result.m[y][x] = m1.m[y][x] - m2.m[y][x];
+		}
+	}
+
+
+	return result;
+}
+;
 
 float Dot(const Vector3& v1, const Vector3& v2) {
 	float result;

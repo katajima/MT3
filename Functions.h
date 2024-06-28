@@ -61,8 +61,10 @@ struct AABB {
 
 //
 Vector3 Add(const Vector3& v1, const Vector3& v2);
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
 //
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
 //
 float Dot(const Vector3& v1, const Vector3& v2);
 //
@@ -160,3 +162,63 @@ Vector3 Perpendicular(const Vector3& vector);
 Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3);
 //マウス
 void Mouse(Vector3& cameraPosition);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//class Vector3 {
+//public:
+//    float x, y, z;
+//
+//    // コンストラクタ
+//    Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
+//
+//    // スカラー乗算
+//    Vector3& operator*=(float s) {
+//        x *= s;
+//        y *= s;
+//        z *= s;
+//        return *this;
+//    }
+//
+//    // ベクトル引き算
+//    Vector3& operator-=(const Vector3& v) {
+//        x -= v.x;
+//        y -= v.y;
+//        z -= v.z;
+//        return *this;
+//    }
+//
+//    // ベクトル加算
+//    Vector3& operator+=(const Vector3& v) {
+//        x += v.x;
+//        y += v.y;
+//        z += v.z;
+//        return *this;
+//    }
+//
+//    // スカラー除算
+//    Vector3& operator/=(float s) {
+//        x /= s;
+//        y /= s;
+//        z /= s;
+//        return *this;
+//    }
+//};
+
+
+
+
+
+
+
