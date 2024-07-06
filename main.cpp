@@ -40,19 +40,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float deltaTime = 1.0f / 60.0f;
 	bool flag = 0;
 
-	//float angularVelocity = 3.14f;
-	//float angle = 0.0f;
-	Vector3 p = { 0.0f,0.0f,0.0f };
+	Ball ball;
+	ball.radius = 0.05f;
 
-	Pendulum pendulum;
-	pendulum.anchor = { 0.0f,1.0f,0.0f };
-	pendulum.length = 0.8f;
-	pendulum.angle = 0.7f;
-	pendulum.angularVelocity = 0.0f;
-	pendulum.angularAcceleration = 0.0f;
 
 	
-
+	ConicalPendulum conicalPendulum;
+	conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
+	conicalPendulum.length = 0.8f;
+	conicalPendulum.halfApexAngle = 0.7f;
+	conicalPendulum.angle = 0.0f;
+	conicalPendulum.angularVelocity = 0.0f;
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -76,21 +74,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
 
 		if (flag) {
-		
-			pendulum.angularAcceleration = -(9.8f / pendulum.length) * std::sin(pendulum.angle);
-			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
-			pendulum.angle += pendulum.angularVelocity * deltaTime;
-
-			
-
+			conicalPendulum.angularVelocity = std::sqrt(9.8f / (conicalPendulum.length * std::cos(conicalPendulum.halfApexAngle)));
+			conicalPendulum.angle += conicalPendulum.angularVelocity * deltaTime;
 		}
 		
+		
+		float radius = std::sin(conicalPendulum.halfApexAngle) * conicalPendulum.length;
+		float height = std::cos(conicalPendulum.halfApexAngle) * conicalPendulum.length;
+		ball.position.x = conicalPendulum.anchor.x + std::cos(conicalPendulum.angle) * radius;
+		ball.position.y = conicalPendulum.anchor.y - height;
+		ball.position.z = conicalPendulum.anchor.z - std::sin(conicalPendulum.angle) * radius;
 
-		
-		p.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
-		p.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
-		p.z = pendulum.anchor.z;
-		
+
+
 
 		///
 		/// ↑更新処理ここまで
@@ -105,14 +101,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 
-		DrawSphere({ p,0.07f}, worldViewProjectionMatrix, viewportMatrix, WHITE);
-		DrawLine({ pendulum.anchor,p }, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere({ ball.position,ball.radius}, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawLine({ conicalPendulum.anchor,ball.position }, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
 		ImGui::Checkbox("flag", &flag);
+		ImGui::SliderFloat("length", &conicalPendulum.length, 0.0f, 3.0f);
+		ImGui::SliderFloat("halfApexAngle", &conicalPendulum.halfApexAngle, 0.0f, 1.0f);
 		ImGui::End();
 
 
