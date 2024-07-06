@@ -40,9 +40,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float deltaTime = 1.0f / 60.0f;
 	bool flag = 0;
 
-	float angularVelocity = 3.14f;
-	float angle = 0.0f;
+	//float angularVelocity = 3.14f;
+	//float angle = 0.0f;
 	Vector3 p = { 0.0f,0.0f,0.0f };
+
+	Pendulum pendulum;
+	pendulum.anchor = { 0.0f,1.0f,0.0f };
+	pendulum.length = 0.8f;
+	pendulum.angle = 0.7f;
+	pendulum.angularVelocity = 0.0f;
+	pendulum.angularAcceleration = 0.0f;
+
+	
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -66,22 +76,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
 
 		if (flag) {
-			
-			angle += angularVelocity * deltaTime;
+		
+			pendulum.angularAcceleration = -(9.8f / pendulum.length) * std::sin(pendulum.angle);
+			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
+			pendulum.angle += pendulum.angularVelocity * deltaTime;
 
-			
 			
 
 		}
-		//Vector3 c;
-		p.x = sphere.center.x + std::cos(angle) * 1.0f;
-		p.y = sphere.center.y + std::sin(angle) * 1.0f;
-		p.z = sphere.center.z;
+		
 
-
-
-		//sphere.center = ball.position;
-
+		
+		p.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
+		p.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
+		p.z = pendulum.anchor.z;
+		
 
 		///
 		/// ↑更新処理ここまで
@@ -96,8 +105,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 
-		DrawSphere({ p,0.05f}, worldViewProjectionMatrix, viewportMatrix, WHITE);
-
+		DrawSphere({ p,0.07f}, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawLine({ pendulum.anchor,p }, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 
 		ImGui::Begin("Win");
