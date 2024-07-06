@@ -19,13 +19,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//回転
 	Vector3 rotate{};
 	//カメラポジション
-	Vector3 cameraPosition{ 0.0f,20.0f,-61.49f };
-	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
+	Vector3 cameraPosition{ 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
 	Vector3 translates[3];
-	translates[0] = { 0.1f,4,0.1f };
-	translates[1] = { 3,2,0.1f };
-	translates[2] = { 2,0.1f,0.1f };
+	translates[0] = { 0.2f,1.0f,0 };
+	translates[1] = { 0.4f,0.0f,0 };
+	translates[2] = { 0.3f,0.0f,0 };
 	Vector3 rotates[3];
 	rotates[0] = { 0,0,-6.8f };
 	rotates[1] = { 0,0,-1.4f };
@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Sphere sphere[3];
 	for (int i = 0; i < 3; i++) {
 		sphere[i].center = translates[i];
-		sphere[i].radius = 0.4f;
+		sphere[i].radius = 0.05f;
 	}
 
 	Matrix4x4 worldMatrixs[3];
