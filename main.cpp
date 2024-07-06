@@ -30,8 +30,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//回転
 	Vector3 rotate{};
 	//カメラポジション
-	Vector3 cameraPosition{ 0.0f,5.0f,-21.49f };
-	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
+	Vector3 cameraPosition{ 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
 	Spring spring{};
 	spring.anchor = { 0.0f,0.0f,0.0f };
