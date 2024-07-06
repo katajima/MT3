@@ -19,15 +19,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//回転
 	Vector3 rotate{};
 	//カメラポジション
-	Vector3 cameraPosition{ 0.0f,20.0f,-61.49f };
-	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
+	Vector3 cameraPosition{ 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
 	AABB aabb1;
-	aabb1.max = { 5.0f,5.0f,5.0f };
+	aabb1.max = { 0.5f,0.5f,0.5f };
 	aabb1.min = { 0.0f,0.0f,0.0f };
 	Sphere sphere;
-	sphere.center = { 5,5,5 };
-	sphere.radius = { 5 };
+	sphere.center = { 0.0f,0.0f,0.0f };
+	sphere.radius = { 0.5 };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
