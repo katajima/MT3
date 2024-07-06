@@ -19,17 +19,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//回転
 	Vector3 rotate{};
 	//カメラポジション
-	Vector3 cameraPosition{ 0.0f,20.0f,-61.49f };
-	Vector3 cameraRotate{ 0.25f,0.0f,0.0f };
+	Vector3 cameraPosition{ 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
 	Vector3 controlPoint[3];
-	controlPoint[0] = { 5,5,5 };
-	controlPoint[1] = { 5,10,5 };
-	controlPoint[2] = { 10,5,0 };
+	controlPoint[0] = { 0,0,0 };
+	controlPoint[1] = { 0.5f,1,0 };
+	controlPoint[2] = { 1,0,0 };
 	Sphere sphere[3];
 	for (int i = 0; i < 3; i++) {
 		sphere[i].center = controlPoint[i];
-		sphere[i].radius = 0.1f;
+		sphere[i].radius = 0.01f;
 	}
 
 
