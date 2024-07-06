@@ -33,21 +33,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraPosition{ 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
-	Spring spring{};
-	spring.anchor = { 0.0f,0.0f,0.0f };
-	spring.naturalLength = 1.0f;
-	spring.stiffness = 100.0f;
-	spring.dampingCoefficient = 2.0f;
 
-	Ball ball{};
-	ball.position = { 1.2f,0.0f,0.0f };
-	ball.mass = 2.0f;
-	ball.radius = 0.05f;
-	ball.color = BLUE;
 
 	Sphere sphere{};
+	sphere.center = { 0.0f,0.0f,0.0f };
 	float deltaTime = 1.0f / 60.0f;
 	bool flag = 0;
+
+	float angularVelocity = 3.14f;
+	float angle = 0.0f;
+	Vector3 p = { 0.0f,0.0f,0.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -71,29 +66,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
 
 		if (flag) {
-			Vector3 diff = ball.position - spring.anchor;
-			float length = Length(diff);
-			if (length != 0.0f) {
-				Vector3 direction = Nomalize(diff);
-				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
-				Vector3 displacement = length * (ball.position - restPosition);
-				Vector3 restoringForce = -spring.stiffness * displacement;
-				Vector3 dampingForce = -spring.dampingCoefficient * ball.veloctiy;
-				Vector3 force = restoringForce + dampingForce;
-				ball.acceleration = force / ball.mass;
-			}
-			ball.veloctiy.x += ball.acceleration.x * deltaTime;
-			ball.veloctiy.y += ball.acceleration.y * deltaTime;
-			ball.veloctiy.z += ball.acceleration.z * deltaTime;
-			ball.position.x += ball.veloctiy.x * deltaTime;
-			ball.position.y += ball.veloctiy.y * deltaTime;
-			ball.position.z += ball.veloctiy.z * deltaTime;
+			
+			angle += angularVelocity * deltaTime;
+
+			
+			
+
 		}
+		//Vector3 c;
+		p.x = sphere.center.x + std::cos(angle) * 1.0f;
+		p.y = sphere.center.y + std::sin(angle) * 1.0f;
+		p.z = sphere.center.z;
 
 
 
-
-		sphere.center = ball.position;
+		//sphere.center = ball.position;
 
 
 		///
@@ -109,8 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
 
-		DrawLine({ ball.position,spring.anchor }, worldViewProjectionMatrix, viewportMatrix, WHITE);
-		DrawSphere({ ball.position,ball.radius}, worldViewProjectionMatrix, viewportMatrix, ball.color);
+		DrawSphere({ p,0.05f}, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 
 
