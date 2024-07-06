@@ -698,7 +698,7 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 	//中心点にそれぞれ定数倍してたす
 	Vector3 points[4];
 	for (int32_t index = 0; index < 4; ++index) {
-		Vector3 extend = Multiply(6.0f, perpendiculars[index]);
+		Vector3 extend = Multiply(2.0f, perpendiculars[index]);
 		Vector3 point = Add(center, extend);
 		points[index] = Transform(Transform(point, viewProjectionMatrix), viewportMatrix);
 	}
@@ -1169,6 +1169,16 @@ void Mouse(Vector3& cameraPosition)
 	else if (Novice::IsTriggerMouse(1)) {
 	}
 
+}
+
+Vector3 Reflect(const Vector3& input, const Vector3& normal)
+{
+	Vector3 result;
+	float dotProduct = Dot(input, normal);
+	result.x = input.x - normal.x * (2 * dotProduct);
+	result.y = input.y - normal.y * (2 * dotProduct);
+	result.z = input.z - normal.z * (2 * dotProduct);
+	return result;
 }
 
 bool IsPointInsideAABB(const Vector3& point, const AABB& aabb) {

@@ -6,6 +6,7 @@ const char kWindowTitle[] = "LE2B_06_カタジマ_ロウノシン_タイトル";
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2) { return Add(v1, v2); };
 Vector3 operator-(const Vector3& v1, const Vector3& v2) { return Subtract(v1, v2); };
+Vector3 operator*(const Vector3& v1, const Vector3& v2) { return Multiply(v1, v2); };
 Vector3 operator*(float s, const Vector3& v) { return Multiply(s, v); };
 Vector3 operator*(const Vector3& v, float s) { return s * v; };
 Vector3 operator/(const Vector3& v, float s) { return Multiply(1.0f / s, v); }
@@ -41,16 +42,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool flag = 0;
 
 	Ball ball;
+	ball.veloctiy = { 0.0f,0.0f,0.0f };
+	ball.position = { 0.8f,1.2f,0.3f };
+	ball.mass = 2.0f;
 	ball.radius = 0.05f;
+	ball.acceleration = { 0.0f,-9.8f,0.0f };
+	ball.color = WHITE;
 
+	Plane plane;
+	plane.distance = 0.0f;
+	plane.nomal = Nomalize({ -0.2f,0.9f,-0.3f });
 
-	
-	ConicalPendulum conicalPendulum;
-	conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
-	conicalPendulum.length = 0.8f;
-	conicalPendulum.halfApexAngle = 0.7f;
-	conicalPendulum.angle = 0.0f;
-	conicalPendulum.angularVelocity = 0.0f;
+	Capsule capsule;
+	capsule.segment = Segment{ ball.position, ball.position + ball.veloctiy };
+	capsule.radius = ball.radius;
+
+	float e = 0.8f; // 反発係数
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -74,18 +81,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
 
 		if (flag) {
-			conicalPendulum.angularVelocity = std::sqrt(9.8f / (conicalPendulum.length * std::cos(conicalPendulum.halfApexAngle)));
-			conicalPendulum.angle += conicalPendulum.angularVelocity * deltaTime;
+			//ball.veloctiy = Add(ball.veloctiy, ball.acceleration * deltaTime);
+			//ball.position = Add(ball.position, ball.veloctiy * deltaTime);
+			ball.veloctiy.x += ball.acceleration.x * deltaTime;
+			ball.veloctiy.y += ball.acceleration.y * deltaTime;
+			ball.veloctiy.z += ball.acceleration.z * deltaTime;
+		
+			ball.position.x += ball.veloctiy.x * deltaTime;
+			ball.position.y += ball.veloctiy.y * deltaTime;
+			ball.position.z += ball.veloctiy.z * deltaTime;	
+
+			capsule.segment = Segment{ ball.position, ball.position + ball.veloctiy * deltaTime };
+
 		}
 		
 		
-		float radius = std::sin(conicalPendulum.halfApexAngle) * conicalPendulum.length;
-		float height = std::cos(conicalPendulum.halfApexAngle) * conicalPendulum.length;
-		ball.position.x = conicalPendulum.anchor.x + std::cos(conicalPendulum.angle) * radius;
-		ball.position.y = conicalPendulum.anchor.y - height;
-		ball.position.z = conicalPendulum.anchor.z - std::sin(conicalPendulum.angle) * radius;
-
-
+		
+		if (IsCollision(Sphere{ ball.position,ball.radius }, plane)) {
+			Vector3 reflected = Reflect(ball.veloctiy, plane.nomal);
+			Vector3 projectToNomal = Project(reflected, plane.nomal);
+			Vector3 movingDirection = reflected - projectToNomal;
+			ball.veloctiy = projectToNomal * e + movingDirection;
+		}
 
 
 		///
@@ -100,17 +117,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
-
-		DrawSphere({ ball.position,ball.radius}, worldViewProjectionMatrix, viewportMatrix, WHITE);
-		DrawLine({ conicalPendulum.anchor,ball.position }, worldViewProjectionMatrix, viewportMatrix, WHITE);
-
+		DrawPlane(plane, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere({ capsule.segment.origin,ball.radius}, worldViewProjectionMatrix, viewportMatrix, ball.color);
+		
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
 		ImGui::Checkbox("flag", &flag);
-		ImGui::SliderFloat("length", &conicalPendulum.length, 0.0f, 3.0f);
-		ImGui::SliderFloat("halfApexAngle", &conicalPendulum.halfApexAngle, 0.0f, 1.0f);
+		ImGui::DragFloat("e", &e, 0.01f);
+		if (ImGui::Button("reset")) {
+			plane.nomal = Nomalize({ -0.2f,0.9f,-0.3f });
+			ball.position = { 0.8f,1.2f,0.3f };
+			ball.veloctiy = { 0.0f,0.0f,0.0f };
+		}
 		ImGui::End();
 
 

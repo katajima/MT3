@@ -33,6 +33,7 @@ struct Plane {
 };
 
 
+
 //直線
 struct Line
 {
@@ -93,7 +94,11 @@ struct ConicalPendulum {
 	
 };
 
-
+struct  Capsule
+{
+	Segment segment;
+	float radius;
+};
 
 //
 Vector3 Add(const Vector3& v1, const Vector3& v2);
@@ -198,7 +203,8 @@ Vector3 Perpendicular(const Vector3& vector);
 Plane PlaneFromPoints(const Vector3& p1, const Vector3& p2, const Vector3& p3);
 //マウス
 void Mouse(Vector3& cameraPosition);
-
+//反射ベクトル
+Vector3 Reflect(const Vector3& input, const Vector3& normal);
 
 
 //// コンストラクタ
