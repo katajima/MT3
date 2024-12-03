@@ -25,6 +25,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AABB aabb1;
 	aabb1.max = { 0.5f,0.5f,0.5f };
 	aabb1.min = { 0.0f,0.0f,0.0f };
+
+	Sphere sphere;
+	sphere.center = { 0,0,0 };
+	sphere.radius = { 0.1f };
+
 	Segment segment;
 	segment.origin = { 0.0f,0.0f,0.0f };
 	segment.diff = { 0.0f,0.0f,1.0f };
@@ -109,6 +114,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		else {
 			DrawBox(aabb1, worldViewProjectionMatrix, viewportMatrix, WHITE);
 		}
+
+		if (IsCollision(sphere, segment)) {
+			DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, RED);
+		}
+		else {
+			DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, WHITE);
+		}
+
+
 		DrawLine(segment, worldViewProjectionMatrix, viewportMatrix, WHITE);
 
 		ImGui::Begin("Win");

@@ -59,6 +59,7 @@ struct AABB {
 };
 
 
+bool IsCollision(const Sphere& sphere, const Segment& segment);
 //
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 //

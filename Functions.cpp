@@ -4,6 +4,39 @@
 
 float K;
 
+
+bool IsCollision(const Sphere& sphere, const Segment& segment) {
+	Vector3 m = Subtract(segment.origin, sphere.center);
+	Vector3 segEnd = Add(segment.origin, segment.diff);
+
+	// 線分の方向ベクトル
+	Vector3 d = segment.diff;
+	float a = Dot(d, d);
+
+	// 線分の長さがゼロの場合（無効な線分）
+	if (a == 0.0f) return false;
+
+	float b = Dot(m, d);
+	float c = Dot(m, m) - sphere.radius * sphere.radius;
+
+	// 判別式の計算
+	float discriminant = b * b - a * c;
+
+	// 判別式が負の場合、衝突していない
+	if (discriminant < 0.0f) return false;
+
+	// 解の計算
+	float sqrtDiscriminant = std::sqrt(discriminant);
+	float t1 = (-b - sqrtDiscriminant) / a;
+	float t2 = (-b + sqrtDiscriminant) / a;
+
+	// 衝突が線分内（0 <= t <= 1）の場合にのみ true を返す
+	if ((t1 >= 0.0f && t1 <= 1.0f) || (t2 >= 0.0f && t2 <= 1.0f)) {
+		return true;
+	}
+
+	return false;
+}
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
 
