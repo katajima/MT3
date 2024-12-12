@@ -120,6 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawPlane(plane, worldViewProjectionMatrix, viewportMatrix, WHITE);
 		DrawSphere({ capsule.segment.origin,ball.radius}, worldViewProjectionMatrix, viewportMatrix, ball.color);
 		
+		MatrixScreenPrintf(0,0, worldMatrix,"ajasj");
 
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);

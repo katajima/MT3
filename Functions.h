@@ -206,6 +206,8 @@ void Mouse(Vector3& cameraPosition);
 //反射ベクトル
 Vector3 Reflect(const Vector3& input, const Vector3& normal);
 
+//
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
 
 //// コンストラクタ
 //Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}

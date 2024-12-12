@@ -1181,6 +1181,15 @@ Vector3 Reflect(const Vector3& input, const Vector3& normal)
 	return result;
 }
 
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
+{
+	Matrix4x4 result{};
+
+
+
+	return Matrix4x4();
+}
+
 bool IsPointInsideAABB(const Vector3& point, const AABB& aabb) {
 	return (point.x >= aabb.min.x && point.x <= aabb.max.x) &&
 		(point.y >= aabb.min.y && point.y <= aabb.max.y) &&
