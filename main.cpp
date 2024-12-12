@@ -35,29 +35,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 
 
+	Quaternion q1 = { 2.0f,3.0f,4.0f,1.0f };
+	Quaternion q2 = { 1.0f,3.0f,5.0f,2.0f };
+	Quaternion identity = IdentityQuaternion();
+	Quaternion conj = Conjugate(q1);
+	Quaternion inv = Inverse(q1);
+	Quaternion normal = Normalize(q1);
+	Quaternion mul1 = Multiply(q1, q2);
+	Quaternion mul2 = Multiply(q2, q1);
+	float norm = Norm(q1);
 
-	Sphere sphere{};
-	sphere.center = { 0.0f,0.0f,0.0f };
-	float deltaTime = 1.0f / 60.0f;
-	bool flag = 0;
+	Quaternion rotation;
+	Quaternion aa = rotation.MakeRotateAxisAngle(Vector3{1.0f,0.4f,-0.2f},0.45f);
+	Vector3 pointY = { 2.1f,-0.9f,1.3f };
+	Matrix4x4 rotatematrix = MakeRotateMatrix(rotation);
+	Vector3 rotateByQuaternion = rotation.RotateVector(pointY, rotation);
+	Vector3 rotateByMatrix = Transform(pointY, rotatematrix);
 
-	Ball ball;
-	ball.veloctiy = { 0.0f,0.0f,0.0f };
-	ball.position = { 0.8f,1.2f,0.3f };
-	ball.mass = 2.0f;
-	ball.radius = 0.05f;
-	ball.acceleration = { 0.0f,-9.8f,0.0f };
-	ball.color = WHITE;
 
-	Plane plane;
-	plane.distance = 0.0f;
-	plane.nomal = Nomalize({ -0.2f,0.9f,-0.3f });
-
-	Capsule capsule;
-	capsule.segment = Segment{ ball.position, ball.position + ball.veloctiy };
-	capsule.radius = ball.radius;
-
-	float e = 0.8f; // 反発係数
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -80,30 +75,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(1280), float(720), 0.0f, 1.0f);
 
-		if (flag) {
-			//ball.veloctiy = Add(ball.veloctiy, ball.acceleration * deltaTime);
-			//ball.position = Add(ball.position, ball.veloctiy * deltaTime);
-			ball.veloctiy.x += ball.acceleration.x * deltaTime;
-			ball.veloctiy.y += ball.acceleration.y * deltaTime;
-			ball.veloctiy.z += ball.acceleration.z * deltaTime;
 		
-			ball.position.x += ball.veloctiy.x * deltaTime;
-			ball.position.y += ball.veloctiy.y * deltaTime;
-			ball.position.z += ball.veloctiy.z * deltaTime;	
-
-			capsule.segment = Segment{ ball.position, ball.position + ball.veloctiy * deltaTime };
-
-		}
-		
-		
-		
-		if (IsCollision(Sphere{ ball.position,ball.radius }, plane)) {
-			Vector3 reflected = Reflect(ball.veloctiy, plane.nomal);
-			Vector3 projectToNomal = Project(reflected, plane.nomal);
-			Vector3 movingDirection = reflected - projectToNomal;
-			ball.veloctiy = projectToNomal * e + movingDirection;
-		}
-
+		QuaternionScreenPrintf(0, 0, identity, ": Identity");
+		QuaternionScreenPrintf(0, 20, conj, ": Conjugate");
+		QuaternionScreenPrintf(0, 40, inv, ": Inverse");
+		QuaternionScreenPrintf(0, 60, normal, ": Normalize");
+		QuaternionScreenPrintf(0, 80, mul1, ": Multiply(q1,q2)");
+		QuaternionScreenPrintf(0, 100, mul2, ": Multiply(q2,q1)");
+		Novice::ScreenPrintf(0, 120, " %.2f :Norm", norm);
 
 		///
 		/// ↑更新処理ここまで
@@ -117,21 +96,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(worldViewProjectionMatrix, viewportMatrix);
 
-		DrawPlane(plane, worldViewProjectionMatrix, viewportMatrix, WHITE);
-		DrawSphere({ capsule.segment.origin,ball.radius}, worldViewProjectionMatrix, viewportMatrix, ball.color);
 		
-		MatrixScreenPrintf(0,0, worldMatrix,"ajasj");
 
+
+		
 		ImGui::Begin("Win");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.1f);
-		ImGui::Checkbox("flag", &flag);
-		ImGui::DragFloat("e", &e, 0.01f);
-		if (ImGui::Button("reset")) {
-			plane.nomal = Nomalize({ -0.2f,0.9f,-0.3f });
-			ball.position = { 0.8f,1.2f,0.3f };
-			ball.veloctiy = { 0.0f,0.0f,0.0f };
-		}
 		ImGui::End();
 
 

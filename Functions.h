@@ -15,9 +15,12 @@ struct Matrix4x4
 };
 
 struct Vector3 {
-	float x, y, z;
+	float x;
+	float y;
+	float z;
 
-
+	Vector3() : x(0), y(0), z(0) {}
+	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
 // 円
@@ -100,6 +103,63 @@ struct  Capsule
 	float radius;
 };
 
+struct Quaternion {
+    float x;
+    float y;
+    float z;
+    float w;
+
+    Quaternion() : x(0), y(0), z(0), w(1) {}
+    Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+
+    float Norm() const {
+        return std::sqrt(x * x + y * y + z * z + w * w);
+    }
+
+    Quaternion Normalize() const {
+        float norm = Norm();
+        return Quaternion(x / norm, y / norm, z / norm, w / norm);
+    }
+
+    Quaternion Conjugate() const {
+        return Quaternion(-x, -y, -z, w);
+    }
+
+    Quaternion Inverse() const {
+        float norm = Norm();
+        float normSquared = norm * norm;
+        Quaternion conjugate = Conjugate();
+        return Quaternion(conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared, conjugate.w / normSquared);
+    }
+
+    Quaternion Multiply(const Quaternion& rhs) const {
+        float nw = w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z;
+        float nx = w * rhs.x + x * rhs.w + y * rhs.z - z * rhs.y;
+        float ny = w * rhs.y - x * rhs.z + y * rhs.w + z * rhs.x;
+        float nz = w * rhs.z + x * rhs.y - y * rhs.x + z * rhs.w;
+        return Quaternion(nx, ny, nz, nw);
+    }
+
+    static Quaternion MakeRotateAxisAngle(const Vector3& axis, float angle) {
+        float halfAngle = angle * 0.5f;
+        float sinHalfAngle = std::sin(halfAngle);
+        return Quaternion(
+            axis.x * sinHalfAngle,
+            axis.y * sinHalfAngle,
+            axis.z * sinHalfAngle,
+            std::cos(halfAngle)
+        ).Normalize();
+    }
+
+    static Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion) {
+        Quaternion qVector(vector.x, vector.y, vector.z, 0);
+        Quaternion qConjugate = quaternion.Conjugate();
+        Quaternion rotated = quaternion.Multiply(qVector).Multiply(qConjugate);
+        return Vector3(rotated.x, rotated.y, rotated.z);
+    }
+};
+
+
 //
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
@@ -160,6 +220,8 @@ Vector3 Cross(const Vector3& v1, const Vector3& v2);
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
 
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label);
+
+void QuaternionScreenPrintf(int x, int y, const Quaternion& uaternion, const char* label);
 //線
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 //円
@@ -209,40 +271,17 @@ Vector3 Reflect(const Vector3& input, const Vector3& normal);
 //
 Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
 
-//// コンストラクタ
-//Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
-//
-//// スカラー乗算
-//Vector3& operator*=(float s) {
-//    x *= s;
-//    y *= s;
-//    z *= s;
-//    return *this;
-//}
 
-//// ベクトル引き算
-//Vector3& operator-=(const Vector3& v) {
-//    x -= v.x;
-//    y -= v.y;
-//    z -= v.z;
-//    return *this;
-//}
-//
-//// ベクトル加算
-//Vector3& operator+=(const Vector3& v) {
-//    x += v.x;
-//    y += v.y;
-//    z += v.z;
-//    return *this;
-//}
-//
-//// スカラー除算
-//Vector3& operator/=(float s) {
-//    x /= s;
-//    y /= s;
-//    z /= s;
-//    return *this;
-//}
+Quaternion Multiply(const Quaternion& lhs, const Quaternion rhs);
+Quaternion IdentityQuaternion();
+Quaternion Conjugate(const Quaternion& lhs);
+float Norm(const Quaternion& q);
+Quaternion Inverse(const Quaternion& lhs);
+Quaternion Normalize(const Quaternion& q);
+
+Matrix4x4 MakeRotateMatrix(const Quaternion& q);
+
+
 
 
 
