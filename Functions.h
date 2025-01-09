@@ -12,6 +12,8 @@ static const int kRowHeight = 20;
 struct Matrix4x4
 {
 	float m[4][4];
+
+    Matrix4x4() { for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) { m[i][j] = (i == j) ? 1.0f : 0.0f; } } }
 };
 
 struct Vector3 {
@@ -111,52 +113,6 @@ struct Quaternion {
 
     Quaternion() : x(0), y(0), z(0), w(1) {}
     Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-
-    float Norm() const {
-        return std::sqrt(x * x + y * y + z * z + w * w);
-    }
-
-    Quaternion Normalize() const {
-        float norm = Norm();
-        return Quaternion(x / norm, y / norm, z / norm, w / norm);
-    }
-
-    Quaternion Conjugate() const {
-        return Quaternion(-x, -y, -z, w);
-    }
-
-    Quaternion Inverse() const {
-        float norm = Norm();
-        float normSquared = norm * norm;
-        Quaternion conjugate = Conjugate();
-        return Quaternion(conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared, conjugate.w / normSquared);
-    }
-
-    Quaternion Multiply(const Quaternion& rhs) const {
-        float nw = w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z;
-        float nx = w * rhs.x + x * rhs.w + y * rhs.z - z * rhs.y;
-        float ny = w * rhs.y - x * rhs.z + y * rhs.w + z * rhs.x;
-        float nz = w * rhs.z + x * rhs.y - y * rhs.x + z * rhs.w;
-        return Quaternion(nx, ny, nz, nw);
-    }
-
-    static Quaternion MakeRotateAxisAngle(const Vector3& axis, float angle) {
-        float halfAngle = angle * 0.5f;
-        float sinHalfAngle = std::sin(halfAngle);
-        return Quaternion(
-            axis.x * sinHalfAngle,
-            axis.y * sinHalfAngle,
-            axis.z * sinHalfAngle,
-            std::cos(halfAngle)
-        ).Normalize();
-    }
-
-    static Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion) {
-        Quaternion qVector(vector.x, vector.y, vector.z, 0);
-        Quaternion qConjugate = quaternion.Conjugate();
-        Quaternion rotated = quaternion.Multiply(qVector).Multiply(qConjugate);
-        return Vector3(rotated.x, rotated.y, rotated.z);
-    }
 };
 
 
@@ -268,18 +224,19 @@ void Mouse(Vector3& cameraPosition);
 //反射ベクトル
 Vector3 Reflect(const Vector3& input, const Vector3& normal);
 
-//
-Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle);
-
 
 Quaternion Multiply(const Quaternion& lhs, const Quaternion rhs);
 Quaternion IdentityQuaternion();
 Quaternion Conjugate(const Quaternion& lhs);
 float Norm(const Quaternion& q);
 Quaternion Inverse(const Quaternion& lhs);
-Quaternion Normalize(const Quaternion& q);
 
-Matrix4x4 MakeRotateMatrix(const Quaternion& q);
+
+
+
+
+
+
 
 
 

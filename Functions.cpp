@@ -1192,14 +1192,8 @@ Vector3 Reflect(const Vector3& input, const Vector3& normal)
 	return result;
 }
 
-//Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
-//{
-//	Matrix4x4 result{};
-//
-//
-//
-//	return Matrix4x4();
-//}
+
+
 
 Quaternion Multiply(const Quaternion& lhs, const Quaternion rhs)
 {
@@ -1229,38 +1223,11 @@ Quaternion Inverse(const Quaternion& lhs) {
 	return Quaternion(conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared, conjugate.w / normSquared);
 }
 
-Quaternion Normalize(const Quaternion& q) { 
-	float norm = Norm(q); 
-	return Quaternion(q.x / norm, q.y / norm, q.z / norm, q.w / norm); 
-}
+
 
 bool IsPointInsideAABB(const Vector3& point, const AABB& aabb) {
 	return (point.x >= aabb.min.x && point.x <= aabb.max.x) &&
 		(point.y >= aabb.min.y && point.y <= aabb.max.y) &&
 		(point.z >= aabb.min.z && point.z <= aabb.max.z);
-}
-
-Matrix4x4 MakeRotateMatrix(const Quaternion& q) {
-	Matrix4x4 m{};
-	float xx = q.x * q.x; float yy = q.y * q.y; float zz = q.z * q.z;
-	float xy = q.x * q.y; float xz = q.x * q.z; float yz = q.y * q.z;
-	float wx = q.w * q.x; float wy = q.w * q.y; float wz = q.w * q.z;
-	m.m[0][0] = 1.0f - 2.0f * (yy + zz);
-	m.m[0][1] = 2.0f * (xy - wz);
-	m.m[0][2] = 2.0f * (xz + wy);
-	m.m[0][3] = 0.0f;
-	m.m[1][0] = 2.0f * (xy + wz);
-	m.m[1][1] = 1.0f - 2.0f * (xx + zz);
-	m.m[1][2] = 2.0f * (yz - wx);
-	m.m[1][3] = 0.0f;
-	m.m[2][0] = 2.0f * (xz - wy);
-	m.m[2][1] = 2.0f * (yz + wx);
-	m.m[2][2] = 1.0f - 2.0f * (xx + yy);
-	m.m[2][3] = 0.0f;
-	m.m[3][0] = 0.0f;
-	m.m[3][1] = 0.0f;
-	m.m[3][2] = 0.0f;
-	m.m[3][3] = 1.0f;
-	return m;
 }
 
